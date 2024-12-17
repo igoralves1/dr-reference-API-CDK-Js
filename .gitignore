@@ -14,3 +14,5 @@ info.txt
 Dockerfile
 docker-compose.yml
 z.txt
+a.txt
+.handler

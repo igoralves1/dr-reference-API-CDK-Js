@@ -1,17 +1,26 @@
 #!/usr/bin/env node
 const cdk = require("aws-cdk-lib");
-const { DrRefApiStack } = require("../lib/dr-ref-api-stack");
+const { DatabaseStack } = require("../lib/database-stack");
+const { DrRefApiPart1Stack } = require("../lib/dr-ref-api-part1-stack");
+const { DrRefApiPart2Stack } = require("../lib/dr-ref-api-part2-stack");
 
 const app = new cdk.App();
-new DrRefApiStack(app, "DrRefApiStackJS", {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+
+// Deploy the database stack first
+const dbStack = new DatabaseStack(app, "DatabaseStackJS");
+
+// Exporting values from DB stack
+const databaseUrlExportName = "DatabaseURLExport";
+
+// We export the database URL from the db stack
+dbStack.exportValue(dbStack.databaseUrl, { name: databaseUrlExportName });
+
+// Deploy Part 1 stack, importing the database URL
+new DrRefApiPart1Stack(app, "DrRefApiPart1StackJS", {
+  databaseUrlExportName,
+});
+
+// Deploy Part 2 stack, importing the database URL
+new DrRefApiPart2Stack(app, "DrRefApiPart2StackJS", {
+  databaseUrlExportName,
 });

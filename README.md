@@ -8,7 +8,6 @@
 ### Global Packages Required :
 
 - `npm i -g aws-cdk`
-- `npm i -g typescript`
 - `npm i -g aws-sdk`
 
 ---
@@ -18,12 +17,14 @@
 - `cdk bootstrap`
 - `cdk synth`
 - `cdk deploy`
+- `cdk deploy --all`
 
 ---
 
-## Minimal Steps to setup the project
+## 0. Minimal Steps to setup the project
 
 1. Install the Global Packages & Requirements mentioned above.
+
 2. RUN `chmod +x ./setup.sh` & then run the script `./setup.sh`. Now wait for the setup to be completed. If faced any error then refer the `Detailed Steps`
 3. Once the project is deployed completely, go to the created rds database & copy the host value, by default the credentials will be the following :
    ```
@@ -50,15 +51,14 @@
 - `Note : For subsequent deployments you can use the following commands :`
 
   ```
-     npm run build
      python3 ./layers/create_prisma_layer_from_generate.py .env.develop
      cdk synth
-     cdk deploy
+     cdk deploy --all
   ```
 
 ---
 
-## Detailed Steps to setup the project
+## 1. Detailed Steps to setup the project
 
 Running for the First time :
 
@@ -66,12 +66,7 @@ Running for the First time :
    ```
    npm install
    ```
-2. Build the files.
-   ```
-   npm run build
-   ```
-   Note : If you get any error related to 'dist' then direclty use `tsc` to compile & build the files.
-3. Generate the prisma client
+2. Generate the prisma client
 
    ```
    npx dotenv -e .env.develop -- npx prisma generate
@@ -85,27 +80,21 @@ Running for the First time :
       npm install @prisma/client@dev prisma@dev
    ```
 
-4. Build the prisma layer
+3. Build the prisma layer
 
    ```
    python3 ./layers/create_prisma_layer_from_generate.py .env.develop
    ```
 
-5. Boostrap the project
+4. Boostrap, synth & deploy the project
+
    ```
    cdk bootstrap
-   ```
-6. Synthesize the project
-   ```
    cdk synth
-   ```
-7. Deploy the project
-
-   ```
-   cdk deploy
+   cdk deploy --all
    ```
 
-8. Once the stack is deployed COPY the db credentials from the rds databases and update the `DATABASE_URL` values in the project.
+5. Once the stack is deployed COPY the db credentials from the rds databases and update the `DATABASE_URL` values in the project.
    By default the creds will be
 
    ```
@@ -120,57 +109,56 @@ Running for the First time :
    Copy the host value and update in the db url
    `DATABASE_URL="postgresql://<DB_USERNAME>:<DB_PASSWORD>@<DB_HOST>:<DB_PORT>/<DB_DATABASE>"`
 
-9. Once you have the URL ready update them in the following files
+6. Once you have the URL ready update them in the following files
 
    1. `.env.develop`
    2. `lib/dr-ref-api-stack.ts`
 
-10. Now do the migration & seeding from the laravel project using the db credentials.
-11. Once the migration & seeding is done follow the next steps
+7. Now do the migration & seeding from the laravel project using the db credentials.
+8. Once the migration & seeding is done follow the next steps
 
-12. Pull the schema from db to prims
+9. RUN the prisma commands
 
 ```
    npx primsa db pull
-```
-
-12. Genreate the prisma client again
-
-```
    npx dotenv -e .env.develop -- npx prisma generate
-```
-
-13. Run the migration command so that the schema is sync with db
-
-```
    npx dotenv -e .env.develop -- npx prisma migrate dev
 ```
 
-14. Build the files.
-
-```
-   npm run build
-```
-
-15. Generate the prisma layer again
+10. Generate the prisma layer again
 
 ```
    python3 ./layers/create_prisma_layer_from_generate.py .env.develop
 ```
 
-Note : If you get any error then delete the `dist` folder and run `tsc`
-
-16. Synth & Deploy
+11. Synth & Deploy
 
 ```
    cdk synth
-   cdk deploy
+   cdk deploy --all
 ```
 
 ### Subsequent Runs :
 
 - If there any changes done related to db or prisma then the prisma layer should be build again.
 - If changes are related only to the lambda stack then simply build & deploy.
+
+---
+
+### Run the stacks locally for development & testing :
+
+#### Preqrequesite :
+
+- Docker
+- AWS SAM cli : [Link](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html)
+
+```
+sam local start-api --debug --log-file logfile.txt -t ./cdk.out/DrRefApiPart1StackJS.template.json --warm-containers EAGER
+```
+
+```
+sam local start-api --debug --log-file logfile.txt -t ./cdk.out/DrRefApiPart2StackJS.template.json --warm-containers EAGER
+```
 
 ---
 

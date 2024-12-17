@@ -33,10 +33,7 @@ const handleCountryRoutes = async (httpMethod, pathParameters, body) => {
   switch (httpMethod) {
     case "GET":
       if (countryId) {
-        const country = await getCountryById(
-          countryId,
-          prisma
-        );
+        const country = await getCountryById(countryId, prisma);
         return country
           ? responses._200(country)
           : responses._404({ error: "Country not found" });
@@ -45,21 +42,14 @@ const handleCountryRoutes = async (httpMethod, pathParameters, body) => {
       return responses._200(countries);
 
     case "POST":
-      const newCountry = await createCountry(
-        body,
-        prisma
-      );
+      const newCountry = await createCountry(body, prisma);
       return responses._200(newCountry);
 
     case "PUT":
       if (!countryId) {
         return responses._400({ error: "Country ID is required" });
       }
-      const updatedCountry = await updateCountry(
-        countryId,
-        body,
-        prisma
-      );
+      const updatedCountry = await updateCountry(countryId, body, prisma);
       return updatedCountry
         ? responses._200(updatedCountry)
         : responses._404({ error: "Country not found" });
@@ -68,10 +58,7 @@ const handleCountryRoutes = async (httpMethod, pathParameters, body) => {
       if (!countryId) {
         return responses._400({ error: "Country ID is required" });
       }
-      const deletedCountry = await deleteCountry(
-        countryId,
-        prisma
-      );
+      const deletedCountry = await deleteCountry(countryId, prisma);
       return deletedCountry
         ? responses._204()
         : responses._404({ error: "Country not found" });

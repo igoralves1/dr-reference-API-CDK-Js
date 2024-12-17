@@ -7,13 +7,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Running build script..."
-npm run build
-if [ $? -ne 0 ]; then
-  echo "npm run build failed"
-  exit 1
-fi
-
 echo "Installing Prisma as a dev dependency..."
 npm install prisma --save-dev
 if [ $? -ne 0 ]; then
