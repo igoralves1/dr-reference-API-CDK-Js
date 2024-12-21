@@ -50,7 +50,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Deploying CDK stack..."
-cdk deploy
+cdk deploy -all
 if [ $? -ne 0 ]; then
   echo "cdk deploy failed"
   exit 1
