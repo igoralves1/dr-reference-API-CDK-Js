@@ -18,6 +18,7 @@
 - `cdk synth`
 - `cdk deploy`
 - `cdk deploy --all`
+- `cdk destroy --all`
 
 ---
 
