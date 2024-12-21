@@ -1,0 +1,28 @@
+{
+  "name": "df-ref-api",
+  "version": "0.1.0",
+  "bin": {
+    "df-ref-api": "bin/df-ref-api.js"
+  },
+  "scripts": {
+    "cdk": "cdk",
+    "test": "jest",
+    "build": "echo 'No build step needed for JavaScript'",
+    "watch": "nodemon src/index.js",
+    "prisma:generate:develop": "npx dotenv -e .env.develop -- npx prisma generate",
+    "prisma:migrate:develop": "npx dotenv -e .env.develop -- npx prisma migrate dev"
+  },
+  "devDependencies": {
+    "aws-cdk": "2.165.0",
+    "dotenv": "^16.4.7",
+    "dotenv-cli": "^7.4.4",
+    "jest": "^29.7.0",
+    "prisma": "^6.1.0-dev.34"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0-dev.34",
+    "aws-cdk-lib": "2.165.0",
+    "constructs": "^10.0.0",
+    "winston": "^3.17.0"
+  }
+}
