@@ -18,6 +18,7 @@
 - `cdk synth`
 - `cdk deploy`
 - `cdk deploy --all`
+- `cdk deploy --all --require-approval never`
 - `cdk destroy --all`
 
 ---
@@ -37,26 +38,13 @@
       DB_PASSWORD=postgres
    ```
    - Now go to the laravel project and update the database credentials with the above credentials and do the migration & seeding.
-4. Once the step 4 is done, update the `DATABASE_URL` value in the `.env.develop` and `lib/dr-ref-api-stack.ts` file in this format :
+4. Once the migration & seeding is done the CRUDs should be working.
+5. `Note :` If some new table is added or schema is updated for any table in the laravel project then we will need to pull the updated schema in prisma. Update the  `DATABASE_URL="postgresql://<DB_USERNAME>:<DB_PASSWORD>@<DB_HOST>:<DB_PORT>/<DB_DATABASE>"` in the .env & .env.dev file then
    ```
-      DATABASE_URL="postgresql://<DB_USERNAME>:<DB_PASSWORD>@<DB_HOST>:<DB_PORT>/<DB_DATABASE>"
+   npx primsa db pull
    ```
-5. Now we need to setup the prisma & deploy. Follow the following commands :
-   ```
-      npx primsa db pull
-      npx dotenv -e .env.develop -- npx prisma generate
-      npx dotenv -e .env.develop -- npx prisma migrate dev
-   ```
-6. Once the above commands are executed run the following commands.
-
-- `Note : For subsequent deployments you can use the following commands :`
-
-  ```
-     python3 ./layers/create_prisma_layer_from_generate.py .env.develop
-     cdk synth
-     cdk deploy --all
-  ```
-
+   Run the above command and then deploy again. 
+   Once deployed the CRUDs will start working.
 ---
 
 ## 1. Detailed Steps to setup the project
@@ -111,7 +99,7 @@ Running for the First time :
    `DATABASE_URL="postgresql://<DB_USERNAME>:<DB_PASSWORD>@<DB_HOST>:<DB_PORT>/<DB_DATABASE>"`
 
 6. Once you have the URL ready update them in the following files
-
+   0. `.env`
    1. `.env.develop`
    2. `lib/dr-ref-api-stack.ts`
 
