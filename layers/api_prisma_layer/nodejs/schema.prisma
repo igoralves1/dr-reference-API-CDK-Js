@@ -36,8 +36,8 @@ model address_user {
   created_at DateTime  @default(now()) @db.Timestamp(0)
   updated_at DateTime  @default(now()) @db.Timestamp(0)
   deleted_at DateTime? @db.Timestamp(0)
-  addresses  addresses @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_adrrs_usr")
   users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "address_user_user_id_foreign")
+  addresses  addresses @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_adrrs_usr")
 
   @@id([user_id, address_id])
 }
@@ -59,9 +59,9 @@ model addresses {
   created_at      DateTime       @default(now()) @db.Timestamp(0)
   updated_at      DateTime       @default(now()) @db.Timestamp(0)
   deleted_at      DateTime?      @db.Timestamp(0)
+  address_user    address_user[]
   address_types   address_types  @relation(fields: [address_type_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "addresses_address_type_id_foreign")
   cities          cities         @relation(fields: [city_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "addresses_city_id_foreign")
-  address_user    address_user[]
   cell_phones     cell_phones[]
   faxes           faxes[]
   phones          phones[]
@@ -92,8 +92,8 @@ model cities {
   created_at  DateTime    @default(now()) @db.Timestamp(0)
   updated_at  DateTime    @default(now()) @db.Timestamp(0)
   deleted_at  DateTime?   @db.Timestamp(0)
-  provinces   provinces   @relation(fields: [province_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "cities_province_id_foreign")
   addresses   addresses[]
+  provinces   provinces   @relation(fields: [province_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "cities_province_id_foreign")
 
   @@index([id], map: "cities_id_index")
 }
@@ -122,8 +122,8 @@ model country_user {
   created_at DateTime  @default(now()) @db.Timestamp(0)
   updated_at DateTime  @default(now()) @db.Timestamp(0)
   deleted_at DateTime? @db.Timestamp(0)
-  countries  countries @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_country_usr")
   users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "country_user_user_id_foreign")
+  countries  countries @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_country_usr")
 
   @@id([user_id, country_id])
 }
@@ -182,8 +182,8 @@ model languages {
   created_at    DateTime        @default(now()) @db.Timestamp(0)
   updated_at    DateTime        @default(now()) @db.Timestamp(0)
   deleted_at    DateTime?       @db.Timestamp(0)
-  countries     countries       @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "languages_country_id_foreign")
   language_user language_user[]
+  countries     countries       @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "languages_country_id_foreign")
   professions   professions[]
   user_groups   user_groups[]
   user_types    user_types[]
@@ -248,9 +248,9 @@ model provinces {
   created_at            DateTime                @default(now()) @db.Timestamp(0)
   updated_at            DateTime                @default(now()) @db.Timestamp(0)
   deleted_at            DateTime?               @db.Timestamp(0)
-  countries             countries               @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "provinces_country_id_foreign")
   cities                cities[]
   professional_province professional_province[]
+  countries             countries               @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "provinces_country_id_foreign")
 
   @@index([id], map: "provinces_id_index")
 }
@@ -292,8 +292,8 @@ model user_group_user {
   created_at    DateTime    @default(now()) @db.Timestamp(0)
   updated_at    DateTime    @default(now()) @db.Timestamp(0)
   deleted_at    DateTime?   @db.Timestamp(0)
-  user_groups   user_groups @relation(fields: [user_group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usr_grp_usr")
   users         users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_group_user_user_id_foreign")
+  user_groups   user_groups @relation(fields: [user_group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "usr_grp_usr")
 
   @@id([user_id, user_group_id])
 }
@@ -306,8 +306,8 @@ model user_groups {
   created_at      DateTime          @default(now()) @db.Timestamp(0)
   updated_at      DateTime          @default(now()) @db.Timestamp(0)
   deleted_at      DateTime?         @db.Timestamp(0)
-  languages       languages         @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_groups_language_id_foreign")
   user_group_user user_group_user[]
+  languages       languages         @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_groups_language_id_foreign")
 
   @@index([id], map: "user_groups_id_index")
 }
@@ -332,8 +332,8 @@ model user_types {
   created_at     DateTime         @default(now()) @db.Timestamp(0)
   updated_at     DateTime         @default(now()) @db.Timestamp(0)
   deleted_at     DateTime?        @db.Timestamp(0)
-  languages      languages        @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_types_language_id_foreign")
   user_type_user user_type_user[]
+  languages      languages        @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_types_language_id_foreign")
 
   @@index([id], map: "user_types_id_index")
 }
@@ -359,7 +359,7 @@ model users {
   max_tokens                          Int               @default(20)
   used_tokens                         Int               @default(0)
   status                              String?           @db.VarChar(255)
-  invite_token                        String            @unique(map: "users_invite_token_unique") @default("T5fk-X6bE") @db.VarChar(255)
+  invite_token                        String            @unique(map: "users_invite_token_unique") @default("v1te-2sLL") @db.VarChar(255)
   address_user                        address_user[]
   country_user                        country_user[]
   language_user                       language_user[]
@@ -505,10 +505,10 @@ model professionals {
   image_path             String?                  @db.Char(100)
   created_at             DateTime                 @default(now()) @db.Timestamp(0)
   updated_at             DateTime?                @default(now()) @db.Timestamp(0)
-  users                  users                    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "professionals_user_id_foreign")
   article_professional   article_professional[]
   professional_province  professional_province[]
   professional_specialty professional_specialty[]
+  users                  users                    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "professionals_user_id_foreign")
 }
 
 model specialties {
@@ -517,8 +517,8 @@ model specialties {
   name                   String                   @db.Char(100)
   created_at             DateTime                 @default(now()) @db.Timestamp(0)
   updated_at             DateTime?                @default(now()) @db.Timestamp(0)
-  professions            professions              @relation(fields: [profession_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "specialties_profession_id_foreign")
   professional_specialty professional_specialty[]
+  professions            professions              @relation(fields: [profession_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "specialties_profession_id_foreign")
 
   @@index([profession_id], map: "specialties_profession_id_index")
 }
@@ -530,4 +530,96 @@ model videos {
   created_at    DateTime        @default(now()) @db.Timestamp(0)
   updated_at    DateTime?       @default(now()) @db.Timestamp(0)
   article_video article_video[]
+}
+
+model question_images {
+  id          BigInt    @id @default(autoincrement())
+  question_id BigInt
+  image_url   String    @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  questions   questions @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "question_images_question_id_foreign")
+
+  @@index([question_id], map: "question_images_question_id_index")
+}
+
+model question_options {
+  id           BigInt    @id @default(autoincrement())
+  question_id  BigInt
+  option_label String?   @db.VarChar(5)
+  option_text  String
+  is_correct   Boolean   @default(false)
+  explanation  String?
+  usage_count  BigInt    @default(0)
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  questions    questions @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "question_options_question_id_foreign")
+
+  @@index([question_id], map: "question_options_question_id_index")
+}
+
+model subjects {
+  id         BigInt    @id @default(autoincrement())
+  name       String    @unique(map: "subjects_name_unique") @db.VarChar(100)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  topics     topics[]
+}
+
+model topics {
+  id         BigInt      @id @default(autoincrement())
+  subject_id BigInt?
+  name       String      @db.VarChar(100)
+  created_at DateTime?   @db.Timestamp(0)
+  updated_at DateTime?   @db.Timestamp(0)
+  questions  questions[]
+  subjects   subjects?   @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "topics_subject_id_foreign")
+
+  @@index([subject_id], map: "topics_subject_id_index")
+}
+
+model questions {
+  id                 BigInt             @id @default(autoincrement())
+  topic_id           BigInt
+  patient_info       String?            @db.VarChar(255)
+  chief_complaint    String?
+  background_history String?
+  current_findings   String?
+  explanation        String?
+  key_takeaway       String?
+  is_multi_correct   Boolean            @default(false)
+  created_at         DateTime?          @db.Timestamp(0)
+  updated_at         DateTime?          @db.Timestamp(0)
+  question_images    question_images[]
+  question_options   question_options[]
+  topics             topics             @relation(fields: [topic_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "questions_topic_id_foreign")
+  user_responses     user_responses[]
+
+  @@index([topic_id], map: "questions_topic_id_index")
+}
+
+model quizzes {
+  id             BigInt           @id @default(autoincrement())
+  subject_id     BigInt?
+  topic_id       BigInt?
+  title          String?          @db.VarChar(255)
+  created_at     DateTime?        @db.Timestamp(0)
+  updated_at     DateTime?        @db.Timestamp(0)
+  user_responses user_responses[]
+}
+
+model user_responses {
+  id                 BigInt    @id @default(autoincrement())
+  user_id            BigInt?
+  quiz_id            BigInt?
+  question_id        BigInt
+  selected_option_id BigInt?
+  time_taken         Int       @default(0)
+  feedback           String?
+  created_at         DateTime? @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  questions          questions @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_responses_question_id_foreign")
+  quizzes            quizzes?  @relation(fields: [quiz_id], references: [id], onUpdate: NoAction, map: "user_responses_quiz_id_foreign")
+
+  @@index([quiz_id, question_id], map: "user_responses_quiz_id_question_id_index")
 }
